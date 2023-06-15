@@ -1,7 +1,37 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.parcelize'
+    // https://developer.android.google.cn/training/dependency-injection/hilt-android?hl=zh-cn#groovy
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
 }
+
+ext{
+    AppExt = [
+            _BuguAppId_dev  : "6140577d7dada821f9635a82",
+            _BuguAppkey_dev : "5551abf7c6924a06bb66d2d0219eb77c",
+
+            _BuguAppId_rel : "62abefef1adb2e01f6913cbd",
+            _BuguAppkey_rel: "cf200beeac844cd69d609c6ff2060994",
+
+    ]
+
+    versions = [
+            retrofit         : '2.8.1',
+            okhttp           : '4.4.1',
+    ]
+
+    deps = [
+            "retrofit2"                           : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+            "retrofit2_converter_gson"            : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+            "okhttp3"                             : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+            "okhttp3_logger"                      : "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
+            "mqtt_paho"                           : "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.1",
+            "mqtt_paho_service"                   : "org.eclipse.paho:org.eclipse.paho.android.service:1.1.1",
+    ]
+}
+
 
 android {
     namespace 'com.yunext.twins.compose'
@@ -9,15 +39,22 @@ android {
 
     defaultConfig {
         applicationId "com.yunext.twins.compose"
-        minSdk 24
+        minSdk 26
         targetSdk 28
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
+
+        buildConfigField 'String', 'BuguAppId', "\"${AppExt._BuguAppId_dev}\""
+        buildConfigField 'String', 'BuguAppKey', "\"${AppExt._BuguAppkey_dev}\""
+        manifestPlaceholders = [
+                BuguAppId      : AppExt._BuguAppId_dev,
+                BuguAppKey     : AppExt._BuguAppkey_dev,
+        ]
     }
 
     buildTypes {
@@ -27,11 +64,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     buildFeatures {
         compose true
@@ -53,9 +90,19 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.5.1'
     implementation platform('androidx.compose:compose-bom:2022.10.00')
     implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-util'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    // Navigation
+    implementation 'androidx.navigation:navigation-runtime-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-compose:2.5.3'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.compose.ui:ui-text-google-fonts:1.4.3'
+    implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -63,4 +110,43 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+
+
+//    implementation "com.google.accompanist:accompanist-insets:0.16.0"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.31.0-alpha"
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    // https://developer.android.google.cn/training/dependency-injection/hilt-android?hl=zh-cn#groovy
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.44"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.10"
+
+    implementation files( "libs/bugu-logger-release-2.0.10.aar")
+    implementation "com.google.code.gson:gson:2.8.5"
+    implementation deps.retrofit2
+    implementation deps.retrofit2_converter_gson
+    implementation deps.okhttp3
+    implementation deps.okhttp3_logger
+    implementation deps.mqtt_paho
+    implementation deps.mqtt_paho_service
+
+    // room a
+    implementation("androidx.room:room-runtime:2.3.0") {
+        exclude(group: 'org.xerial')
+    }
+    implementation("androidx.room:room-ktx:2.3.0") {
+        exclude(group: 'org.xerial')
+    }
+    implementation 'org.xerial:sqlite-jdbc:3.34.0' // 最重要的 最重要的 最重要的 fix mac bug
+    kapt("androidx.room:room-compiler:2.3.0") {
+        exclude(group: 'org.xerial')
+    }
+    // room z
+}
+
+// https://developer.android.google.cn/training/dependency-injection/hilt-android?hl=zh-cn#groovy
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
 }
