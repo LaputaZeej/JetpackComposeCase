@@ -1,5 +1,6 @@
 package com.yunext.twins.compose.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -18,3 +19,5 @@ val Yellow_Awake = Color(0xFFffeac1)
 val Yellow_Rem = Color(0xFFffdd9a)
 val Yellow_Light = Color(0xFFffcb66)
 val Yellow_Deep = Color(0xFFff973c)
+
+val backgroundColor = Brush.verticalGradient(colors = listOf(Color(0xFFF4F7FB), Color(0xFFF0F4FC)))

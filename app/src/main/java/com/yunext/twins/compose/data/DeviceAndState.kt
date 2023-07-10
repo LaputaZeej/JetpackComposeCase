@@ -17,7 +17,17 @@ class DeviceAndState(
     companion object {
 
         @JvmStatic
-        val DEBUG_LIST:List<DeviceAndState> by lazy {
+        fun randomList(): List<DeviceAndState> =
+            List(Random.nextInt(10)) {
+                DeviceAndState(
+                    name = "虚拟设备 -> $it",
+                    communicationId = "通信id -> $it",
+                    model = "设备型号 -> $it",
+                    status = DeviceStatus.random()
+                )
+            }
+
+        val DEBUG_LIST: List<DeviceAndState> by lazy {
             List(20) {
                 DeviceAndState(
                     name = "虚拟设备 - $it",
@@ -47,7 +57,7 @@ sealed class DeviceStatus(val type: DeviceType, val state: DeviceState) {
     object GPRSOffLine : DeviceStatus(DeviceType.GPRS, DeviceState.OFFLINE)
     companion object {
         internal fun random(): DeviceStatus {
-            return listOf(WiFiOnLine,WiFiOffLine,GPRSOnLine,GPRSOffLine).random()
+            return listOf(WiFiOnLine, WiFiOffLine, GPRSOnLine, GPRSOffLine).random()
         }
     }
 }

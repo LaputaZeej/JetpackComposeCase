@@ -23,9 +23,7 @@ import com.yunext.twins.compose.route.DeviceDestination
 import com.yunext.twins.compose.route.HomeDestination
 import com.yunext.twins.compose.route.SettingDestination
 import com.yunext.twins.compose.route.navigateSingleTopTo
-import com.yunext.twins.compose.ui.debug.DebugActivity
-import com.yunext.twins.compose.ui.debug.MainActivity
-import com.yunext.twins.compose.ui.debug.route.DebugCase
+
 import com.yunext.twins.compose.ui.device.CHDeviceDetailPage
 import com.yunext.twins.compose.ui.device.DeviceActivity
 import com.yunext.twins.compose.ui.device.DeviceActivity2
@@ -33,6 +31,7 @@ import com.yunext.twins.compose.ui.device.profile.setting.CHSettingPage
 import com.yunext.twins.compose.ui.home.CHAddDevicePage
 import com.yunext.twins.compose.ui.home.CHHomeScreenPage
 import com.yunext.twins.compose.ui.theme.CTwinsTheme
+import com.yunext.twins.compose.ui.xpl.DialogsPreview
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -70,6 +69,7 @@ class MainActivity : BaseActivity() {
 //                        value = viewModel.deviceAndStateListFlow.value
 //                    }
                     val list by viewModel.deviceAndStateListFlow.collectAsState()
+                    val uiState by viewModel.uiState.collectAsState()
 //                    val list = remember {
 //                        viewModel.deviceAndStateListFlow
 //                    }
@@ -84,19 +84,26 @@ class MainActivity : BaseActivity() {
                         composable(route = HomeDestination.route) {
                             // home
                             CHHomeScreenPage(list = list,
+                                uiState=uiState,
                                 onDeviceSelected = { device ->
                                     //DeviceActivity.skip(this@MainActivity)
                                     //navController.navigateSingleTopTo(DeviceDestination.route)
                                     viewModel.prepareDeviceDetail(device)
                                     navController.navigateSingleTopTo("${DeviceDestination.route}/${device.communicationId}/${device.name}")
                                 },
+                                onRefresh = {
+                                    viewModel.loadDeviceData()
+                                },
                                 onActionAdd = {
                                     navController.navigateSingleTopTo(AddDeviceDestination.route)
                                 })
+//                            DialogsPreview()
                         }
 
                         composable(route = AddDeviceDestination.route) {
-                            CHAddDevicePage()
+                            CHAddDevicePage(onLeft = {
+                                navController.popBackStack()
+                            })
                         }
 
                         composable(
@@ -128,7 +135,11 @@ class MainActivity : BaseActivity() {
 
         // DeviceActivity.skip(this)
         // DeviceActivity2.skip(this)
-        // startActivity(Intent(this,MainActivity::class.java))
-         startActivity(Intent(this,DebugActivity::class.java))
+
+        // startActivity(Intent(this,DebugActivity::class.java))
+        // startActivity(Intent(this,ActivityTemplate::class.java))
+
+
+
     }
 }

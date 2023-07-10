@@ -7,6 +7,6 @@ interface TslRepository {
 }
 
 @Singleton
-class RemoteTslRepository @Inject constructor(){
+class RemoteTslRepository @Inject constructor():TslRepository{
 
 }

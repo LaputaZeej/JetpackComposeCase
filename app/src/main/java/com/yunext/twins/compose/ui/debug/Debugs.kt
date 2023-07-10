@@ -3,7 +3,7 @@ package com.yunext.twins.compose.ui.debug
 import android.util.Log
 
 object D {
-    private const val TAG = "_debug_"
+    private const val TAG = "_xpl_"
     fun i(msg: String) {
         Log.i(TAG, msg)
     }

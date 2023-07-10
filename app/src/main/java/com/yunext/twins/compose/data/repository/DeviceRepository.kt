@@ -13,7 +13,7 @@ interface DeviceRepository {
 class DeviceRepositoryImpl @Inject constructor():DeviceRepository{
     override suspend fun loadDevice(): List<DeviceAndState> {
         delay(2000)
-        return DeviceAndState.DEBUG_LIST
+        return DeviceAndState.randomList()+DeviceAndState.DEBUG_LIST
     }
 
     override suspend fun findDevice(device: DeviceAndState): DeviceAndState? {

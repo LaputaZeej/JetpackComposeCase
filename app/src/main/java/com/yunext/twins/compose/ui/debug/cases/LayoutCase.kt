@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.unit.dp
 import com.yunext.twins.compose.ui.common.MDF
 import com.yunext.twins.compose.ui.debug.D
+import com.yunext.twins.compose.ui.debug.route.LayoutDebugCase02
 import com.yunext.twins.compose.ui.theme.Purple40
 import com.yunext.twins.compose.ui.theme.Purple80
 
@@ -62,6 +63,8 @@ fun LayoutCase02() {
                 TwoTexts("hello", "固有特性测量 Intrinsic Measurements", debug = false)
             }
             Spacer(modifier = spaceTMD)
+
+            Text(text = LayoutDebugCase02.desc.summary)
 
         }
     }

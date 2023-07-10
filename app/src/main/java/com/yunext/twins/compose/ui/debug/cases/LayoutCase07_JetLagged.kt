@@ -39,7 +39,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -96,9 +95,6 @@ import com.yunext.twins.compose.ui.debug.data.SleepGraphData
 import com.yunext.twins.compose.ui.debug.data.SleepPeriod
 import com.yunext.twins.compose.ui.debug.data.SleepType
 import com.yunext.twins.compose.ui.debug.data.sleepData
-import com.yunext.twins.compose.ui.theme.x9f8
-import com.yunext.twins.compose.ui.theme.xf98
-import kotlinx.coroutines.delay
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -106,7 +102,6 @@ import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 import kotlin.math.roundToInt
-import kotlin.random.Random
 
 private fun MDF.xMdf(debug: Boolean) = if (debug) this then border(1.dp, Color.Red) else this
 private fun MDF.yMdf(debug: Boolean) = if (debug) this then border(1.dp, Color.Blue) else this

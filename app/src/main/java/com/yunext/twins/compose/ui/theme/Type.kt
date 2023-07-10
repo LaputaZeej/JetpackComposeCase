@@ -1,6 +1,7 @@
 package com.yunext.twins.compose.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -33,4 +34,28 @@ val Typography = Typography(
     */
 
 )
+
+object Twins{
+    val twins_title = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        color = Color(0xff333333)
+    )
+
+    val twins_edit_text = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        color = Color(0xff666666)
+    )
+
+    val twins_edit_text_hint = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        color = Color(0xff999999)
+    )
+}
+
 

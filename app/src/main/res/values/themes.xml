@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.CTwins" parent="android:Theme.Material.Light.NoActionBar" />
+
+
+    <style name="Theme.MyDialog" parent="FloatingDialogWindowTheme" />
+
+
 </resources>

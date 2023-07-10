@@ -33,7 +33,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +65,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.drawText
@@ -87,115 +90,114 @@ import kotlinx.coroutines.launch
 
 @Preview
 @Composable
-fun LayoutCase11Preview() {
-    LayoutCase11()
+fun LayoutCase13Preview() {
+    LayoutCase13()
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LayoutCase11() {
-    D.i("∆∆∆∆ LayoutCase11 ")
-    val list = List(5) { it }
-    MyNavHost(list)
-}
+fun LayoutCase13() {
+    D.i("∆∆∆∆ LayoutCase13 ")
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(Color.DarkGray)
+            .padding(16.dp)
+            .background(Color.Gray)
+            .padding(16.dp)
 
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun MyNavHost(list: List<Int>,) {
-    val rememberNavController = rememberNavController()
-//    val rememberPagerStateDebug = rememberPagerState()
-//    val currentBackStackEntryAsState by rememberNavController.currentBackStackEntryAsState()
-    var index by remember {
-        mutableStateOf(0)
-    }
-//    val current = currentBackStackEntryAsState?.destination?.route
-//    D.e("current = $current")
-    NavHost(
-        navController = rememberNavController, startDestination = "MAIN"
     ) {
-        composable("TEST") {
-            TestPage()
-        }
-        composable("MAIN") { entry ->
-            MainPage(null,list, index,toTest={
-                rememberNavController.navigate("TEST") {
-                    popUpTo("MAIN") {
-//                        inclusive =false
-                        saveState = true
-                    }
-                    restoreState = true
-                }
-            }) { selected ->
-                index = selected
-
-            }
-            BackHandler() {
-
-            }
-        }
-    }
-}
-
-@Composable
-private fun TestPage() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "TEST")
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun MainPage(
-    debugState: PagerState? = null,
-    list: List<Int>,
-    selectedIndex: Int,
-    toTest: () -> Unit,
-    onPageSelected: (Int) -> Unit,
-) {
-
-    val rememberPagerState = rememberPagerState(initialPage = selectedIndex)
-//    val rememberPagerState = debugState
-    val rememberCoroutineScope = rememberCoroutineScope()
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        HorizontalPager(
-            pageCount = list.size, modifier = MDF.padding(bottom = 48.dp),
-            pageSize = PageSize.Fill, state = rememberPagerState
-        ) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "MAIN $it", modifier = Modifier.clickable {
-                    toTest()
-                })
-            }
-        }
-
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(48.dp)
-                .background(xf98)
-                .selectableGroup()
-                .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
+                .wrapContentHeight()
+                .background(Color.DarkGray)
+                .padding(16.dp)
+                .background(Color.Gray)
+                .padding(16.dp)
+
         ) {
-            for (i in list) {
-                Text(text = " Tab $i",
-                    color = if (rememberPagerState.currentPage == i) Color.Red else Color.Black,
-                    modifier = MDF
-                        .weight(1f)
-                        .height(48.dp)
-                        .wrapContentHeight()
-                        .clickable {
-                            if (rememberPagerState.currentPage != i) {
-                                rememberCoroutineScope.launch {
-                                    rememberPagerState.animateScrollToPage(i)
-                                }
-                                onPageSelected(i)
-                            }
-                        }
-                )
-            }
+
+            TextField(
+                modifier = Modifier.firstBaselineToTopExt(16.dp),
+                value = "hello zeejpg",
+                onValueChange = {
+
+                })
+
+            Text(
+                text = "【】abcdefghijklmn", modifier = MDF
+                    .background(Color.Red)
+                    .firstBaselineToTopExt((16.dp))
+                //.background(Color.Green)
+            )
+            Spacer(
+                modifier = Modifier
+                    .width(10.dp)
+                    .height(16.dp)
+                    .background(Color.Blue)
+            )
+            Text(
+                text = "【n】abcdefghijklmn", modifier = MDF
+                    .background(Color.Green)
+                    .padding(top = 16.dp)
+            )
+
         }
+
+//        BarChartMinMax(
+//            dataPoints = listOf(4, 24, 15),
+//            maxText = { Text("Max") },
+//            minText = { Text("Min") },
+//            modifier = Modifier.padding(24.dp)
+//        )
     }
+
 }
+
+//@Composable
+//fun BarChartMinMax(
+//    dataPoints: List<Int>,
+//    maxText: @Composable () -> Unit,
+//    minText: @Composable () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    Layout(
+//        content = {
+//            maxText()
+//            minText()
+//            // Set a fixed size to make the example easier to follow
+//            BarChart(dataPoints, Modifier.size(200.dp))
+//        },
+//        modifier = modifier
+//    ) { measurables, constraints ->
+//        check(measurables.size == 3)
+//        val placeables = measurables.map {
+//            it.measure(constraints.copy(minWidth = 0, minHeight = 0))
+//        }
+//
+//        val maxTextPlaceable = placeables[0]
+//        val minTextPlaceable = placeables[1]
+//        val barChartPlaceable = placeables[2]
+//
+//        // Obtain the alignment lines from BarChart to position the Text
+//        val minValueBaseline = barChartPlaceable[MinChartValue]
+//        val maxValueBaseline = barChartPlaceable[MaxChartValue]
+//        layout(constraints.maxWidth, constraints.maxHeight) {
+//            maxTextPlaceable.placeRelative(
+//                x = 0,
+//                y = maxValueBaseline - (maxTextPlaceable.height / 2)
+//            )
+//            minTextPlaceable.placeRelative(
+//                x = 0,
+//                y = minValueBaseline - (minTextPlaceable.height / 2)
+//            )
+//            barChartPlaceable.placeRelative(
+//                x = max(maxTextPlaceable.width, minTextPlaceable.width) + 20,
+//                y = 0
+//            )
+//        }
+//    }
+//}
+
 

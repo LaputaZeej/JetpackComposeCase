@@ -97,7 +97,7 @@ fun LayoutCase04() {
 
 }
 
-private fun MDF.firstBaselineToTopExt(
+internal fun MDF.firstBaselineToTopExt(
     firstBaselineToTop: Dp,
 ) = this.layout { measurable, constraints ->
     // measure the composable

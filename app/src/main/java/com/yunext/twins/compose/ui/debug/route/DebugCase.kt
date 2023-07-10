@@ -14,7 +14,9 @@ import com.yunext.twins.compose.ui.debug.cases.LayoutCase08
 import com.yunext.twins.compose.ui.debug.cases.LayoutCase09
 import com.yunext.twins.compose.ui.debug.cases.LayoutCase10
 import com.yunext.twins.compose.ui.debug.cases.LayoutCase11
-import com.yunext.twins.compose.ui.debug.cases.LayoutCase12
+import com.yunext.twins.compose.ui.debug.cases.LayoutCase13
+import com.yunext.twins.compose.ui.debug.cases.LayoutCase14
+import com.yunext.twins.compose.ui.debug.cases.layout_case12_progress_bar.LayoutCase12
 
 @Immutable
 data class Desc(val title: String, val url: String, val summary: String = "")
@@ -75,6 +77,8 @@ object LayoutDebugCase : DebugCase {
             LayoutDebugCase10,
             LayoutDebugCase11,
             LayoutDebugCase12,
+            LayoutDebugCase13,
+            LayoutDebugCase14,
         )
 
 }
@@ -151,7 +155,7 @@ object LayoutDebugCase04 : DebugCase {
         get() = TitleLevel.Second
     override val desc: Desc
         get() = Desc(
-            "Compose Material 自定义布局 ",
+            "04 Compose Material 自定义布局 ",
             "https://developer.android.com/jetpack/compose/layouts/custom?hl=zh-cn",
             "在界面树中布置每个节点的过程分为三个步骤。每个节点必须：\n" +
                     "\n" +
@@ -218,9 +222,9 @@ object LayoutDebugCase07 : DebugCase {
         get() = TitleLevel.Second
     override val desc: Desc
         get() = Desc(
-            "Custom layouts and graphics in Compose final ",
+            "07 Custom layouts and graphics in Compose final ",
             "https://developer.android.com/jetpack/compose/layouts/custom?hl=zh-cn \n https://youtu.be/xcfEQO0k_gU",
-            "自定义一个作息图表 final"
+            "07 自定义一个作息图表 final"
         )
     override val sub: Array<DebugCase>
         get() = super.sub
@@ -302,9 +306,9 @@ object LayoutDebugCase11 : DebugCase {
         get() = TitleLevel.Second
     override val desc: Desc
         get() = Desc(
-            "Nav",
-            "https://developer.android.com/jetpack/compose/layouts/alignment-lines?hl=zh-cn",
-            "Nav"
+            "Navigation test",
+            "todo",
+            "如何做到从TEST返回MAIN后 pager显示上次选中的index ？？？"
         )
     override val sub: Array<DebugCase>
         get() = super.sub
@@ -323,6 +327,27 @@ object LayoutDebugCase12 : DebugCase {
         get() = TitleLevel.Second
     override val desc: Desc
         get() = Desc(
+            "12 自定义progress",
+            "https://developer.android.com/jetpack/compose/layouts/alignment-lines?hl=zh-cn",
+            "12 自定义progress"
+        )
+    override val sub: Array<DebugCase>
+        get() = super.sub
+
+    override val defaultUi: @Composable () -> Unit
+        get() = {
+            LayoutCase12()
+        }
+
+}
+
+object LayoutDebugCase13 : DebugCase {
+    override val route: String
+        get() = "LayoutDebugCase13"
+    override val level: TitleLevel
+        get() = TitleLevel.Second
+    override val desc: Desc
+        get() = Desc(
             "Jetpack Compose 中的对齐线 ",
             "https://developer.android.com/jetpack/compose/layouts/alignment-lines?hl=zh-cn",
             "Jetpack Compose 中的对齐线"
@@ -332,7 +357,27 @@ object LayoutDebugCase12 : DebugCase {
 
     override val defaultUi: @Composable () -> Unit
         get() = {
-            LayoutCase12()
+            LayoutCase13()
+        }
+
+}
+object LayoutDebugCase14 : DebugCase {
+    override val route: String
+        get() = "LayoutDebugCase14"
+    override val level: TitleLevel
+        get() = TitleLevel.Second
+    override val desc: Desc
+        get() = Desc(
+            "14 Compose 列表和网格 ",
+            "https://developer.android.com/jetpack/compose/lists?hl=zh-cn",
+            "14 Compose 列表和网格"
+        )
+    override val sub: Array<DebugCase>
+        get() = super.sub
+
+    override val defaultUi: @Composable () -> Unit
+        get() = {
+            LayoutCase14()
         }
 
 }

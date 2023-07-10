@@ -1,5 +1,7 @@
 package com.yunext.twins.compose
 
+import com.yunext.twins.compose.ui.debug.cases.demo
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -10,12 +12,20 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
-    data class A(val a:String,val b:Int){
+    data class A(val a: String, val b: Int) {
 
     }
+
+    @Test
+    fun t3() {
+        runBlocking {
+            demo()
+        }
+    }
+
     @Test
     fun t2() {
-
+        TestScope().test()
     }
 
     @Test
@@ -31,10 +41,10 @@ class ExampleUnitTest {
 //        }
 
 
-          val P3 by lazy { arrayOf("a1VYw0yasRT","a1H9poRp5as","a1Wc1OLmCTd") }
-         fun check(data: String): Boolean {
+        val P3 by lazy { arrayOf("a1VYw0yasRT", "a1H9poRp5as", "a1Wc1OLmCTd") }
+        fun check(data: String): Boolean {
             return P3.any {
-                it.equals(data,true)
+                it.equals(data, true)
             }
         }
 
