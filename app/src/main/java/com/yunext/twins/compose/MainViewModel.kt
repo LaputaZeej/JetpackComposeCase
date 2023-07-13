@@ -84,4 +84,8 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateTsl() {
+
+    }
 }

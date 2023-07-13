@@ -2,6 +2,7 @@ package com.yunext.twins.compose.ui.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,12 +14,14 @@ import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,15 +52,15 @@ fun CHTitle(
     text: String,
     icon: Int? = null,
     leftClick: () -> Unit = {},
-    rightClick: () -> Unit = {},
+    rightClick: (() -> Unit)? = null,
     padding: @Composable () -> Unit = {
-             Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(40.dp))
     },
 ) {
-    Column() {
+    Column(modifier) {
         padding()
         ConstraintLayout(
-            modifier
+            Modifier
                 .fillMaxWidth()
                 .height(44.dp)
 
@@ -67,6 +70,7 @@ fun CHTitle(
                 painter = painterResource(id = R.mipmap.icon_twins_return_nor),
                 contentDescription = "back",
                 Modifier
+                    .clip(CircleShape)
                     .clickable {
                         leftClick.invoke()
                     }
@@ -107,22 +111,31 @@ fun CHTitle(
                 }
 
             }
+            if (rightClick != null) {
+                Image(
+                    painter = painterResource(id = R.mipmap.icon_twins_more_nor),
+                    contentDescription = "more",
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable {
+                            rightClick.invoke()
+                        }
+                        .applyIcon()
 
-            Image(
-                painter = painterResource(id = R.mipmap.icon_twins_more_nor),
-                contentDescription = "more",
-                modifier = Modifier
-                    .clickable {
-                        rightClick.invoke()
-                    }
-                    .applyIcon()
+                        .constrainAs(right) {
+                            this.top.linkTo(parent.top)
+                            this.bottom.linkTo(parent.bottom)
+                            this.end.linkTo(parent.end)
+                        }
+                )
+            }else{
+                Box(modifier = Modifier.applyIcon().constrainAs(right) {
+                    this.top.linkTo(parent.top)
+                    this.bottom.linkTo(parent.bottom)
+                    this.end.linkTo(parent.end)
+                })
+            }
 
-                    .constrainAs(right) {
-                        this.top.linkTo(parent.top)
-                        this.bottom.linkTo(parent.bottom)
-                        this.end.linkTo(parent.end)
-                    }
-            )
 
         }
     }

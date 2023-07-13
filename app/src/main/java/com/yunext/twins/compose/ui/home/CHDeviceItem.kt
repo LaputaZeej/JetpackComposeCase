@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
@@ -27,6 +28,7 @@ import com.yunext.twins.compose.data.DeviceAndState
 import com.yunext.twins.compose.data.DeviceStatus
 import com.yunext.twins.compose.ui.common.CHItemShadowShape
 import com.yunext.twins.compose.ui.common.LabelTextBlock
+import com.yunext.twins.compose.ui.theme.ItemDefaults
 
 
 @Preview
@@ -101,10 +103,11 @@ fun CHDeviceItem(
     ConstraintLayout(constraintSet = constraints, modifier = modifier
         .fillMaxWidth()
         .wrapContentHeight()
+        .clip(ItemDefaults.itemShape)
+        .background(Color.White)
         .clickable {
             onClick()
         }
-        .background(Color.White)
         .padding(16.dp)
     ) {
         Text(

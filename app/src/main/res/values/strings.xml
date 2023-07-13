@@ -19,6 +19,15 @@
     <string name="tab_services">服务</string>
     <string name="tab_events">事件</string>
 
+    <string name="event_type_alert">alert</string>
+    <string name="event_type_info">info</string>
+    <string name="event_type_fault">fault</string>
+
+    <string name="menu_config_wifi">进入配网模式</string>
+    <string name="menu_setting">配置</string>
+    <string name="menu_logger">通信日志</string>
+    <string name="menu_update_tsl">检查更新物模型</string>
+
     <string-array name="topics">
         <item>2 new packages arrived</item>
         <item>DIY project recommendation</item>

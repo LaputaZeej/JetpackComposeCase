@@ -1,18 +1,14 @@
 package com.yunext.twins.compose.ui.device
 
-import androidx.compose.animation.animateColor
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +23,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
@@ -38,8 +35,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,12 +42,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.debugInspectorInfo
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,71 +57,305 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.navigation.NavBackStackEntry
-import com.yunext.twins.compose.MainViewModel
 import com.yunext.twins.compose.R
 import com.yunext.twins.compose.data.DeviceAndState
 import com.yunext.twins.compose.ui.common.CHBackgroundBlock
+import com.yunext.twins.compose.ui.common.CHEmptyView
+import com.yunext.twins.compose.ui.common.CHItemShadowShape
 import com.yunext.twins.compose.ui.common.CHTitle
 import com.yunext.twins.compose.ui.common.LabelTextBlock
+import com.yunext.twins.compose.ui.theme.ItemDefaults
+import com.yunext.twins.compose.ui.theme.app_background_70
+import com.yunext.twins.compose.ui.theme.app_textColor_333333
+import com.yunext.twins.compose.ui.theme.app_textColor_666666
+import com.yunext.twins.compose.ui.xpl.CHTipsDialog
 
-private enum class DeviceTab(val text: Int) {
+enum class DeviceTab(val text: Int) {
     Properties(R.string.tab_properties),
-    Events(R.string.tab_properties),
-    Services(R.string.tab_events)
+    Events(R.string.tab_events),
+    Services(R.string.tab_services)
     ;
 }
 
 @Composable
-fun CHDeviceDetailPage(
-    navBackStackEntry: NavBackStackEntry,
-    viewModel: MainViewModel,
+fun <T> CHDeviceDetailPage(
+//    navBackStackEntry: NavBackStackEntry,
+//    viewModel: MainViewModel,
+    device: DeviceAndState?,
+    list: List<T>,
+    onTabSelected: (tab: DeviceTab) -> Unit,
+    onMenuClick: (MenuData) -> Unit,
     onLeft: () -> Unit,
     onRight: () -> Unit,
 ) {
-    LaunchedEffect(key1 = "connectAndRefresh") {
-        viewModel.connectAndRefresh()
-    }
-    val curDevice: DeviceAndState? by viewModel.curDeviceAndStateFlow.collectAsState()
-    // The currently selected tab.
+//    LaunchedEffect(key1 = "connectAndRefresh") {
+//        viewModel.connectAndRefresh()
+//    }
+//    val curDevice: DeviceAndState? by viewModel.curDeviceAndStateFlow.collectAsState()
+//    // The currently selected tab.
     var curTab by remember { mutableStateOf(DeviceTab.Properties) }
-    val device = curDevice
+    var showMenu by remember { mutableStateOf(false) }
+    var editingProperty: Any? by remember { mutableStateOf(null) }
+
+    var addProperty by remember { mutableStateOf(false) }
+
+    var showTips by remember {
+        mutableStateOf("")
+    }
+//    val device = curDevice
     CHBackgroundBlock()
-    if (device == null) {
-        Spacer(modifier = Modifier.height(100.dp))
-        Text(text = "device is empty")
-    } else {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.background(Color(1f, 1f, 1f, 0.7f))) {
-                CHTitle(text = device.name, leftClick = {
-                    onLeft()
-                }, rightClick = {
-                    onRight()
-                })
+//    if (device == null) {
+//        Spacer(modifier = Modifier.height(100.dp))
+//        Text(text = "device is empty")
+//    } else {
 
-                CHDeviceDetail(device = device)
+
+    Column(modifier = Modifier.fillMaxSize()) {
+//        Column(modifier = Modifier.background(Color(1f, 1f, 1f, 0.7f))) {
+        // [title]
+        CHTitle(
+            modifier = Modifier
+                .background(app_background_70),
+            text = device?.name ?: "",
+            leftClick = {
+                onLeft()
+            },
+            rightClick = {
+                showMenu = !showMenu
+            })
+
+        // [content]
+        Box(Modifier.fillMaxWidth()) {
+            Column() {
+                // top
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(app_background_70)
+                        .padding(vertical = 0.dp, horizontal = 12.dp),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Top(device = device)
+                }
+                // tab
+                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                    val (tabRef, countRef) = createRefs()
+                    Tab(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .constrainAs(tabRef) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(countRef.start)
+                                width = Dimension.fillToConstraints
+                            }, curTab
+                    ) {
+                        curTab = it
+                        onTabSelected.invoke(it)
+                    }
+                    CountInfo(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .constrainAs(countRef) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(tabRef.end)
+                                end.linkTo(parent.end)
+                            }, count = list.size
+                    )
+                }
+                // list
+                KVList(
+                    curTab,
+                    list,
+                    onPropertyAction = {
+                        if (editingProperty == null) {
+                            editingProperty = it
+                        }
+                    },
+                    onEventAction = {},
+                    onServiceAction = {})
             }
 
-//            Tab(modifier = Modifier.padding(16.dp), curTab) {
-//                curTab = it
-//            }
-
-            CHTab(modifier = Modifier.padding(16.dp), curTab) {
-                curTab = it
+            // pop
+            if (showMenu) {
+                MenuList(
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .align(Alignment.TopEnd)
+                ) {
+                    onMenuClick(it)
+                }
             }
 
+            // 属性修改
+            val temp = editingProperty
+            if (temp != null) {
+                Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                    PropertyBottomSheet(temp, onClose = {
+                        editingProperty = null
+                    }, onCommitted = {
+                        editingProperty = null
+                        showTips = "选择了$it"
+                    }, add = false to {
+                        addProperty = true
+                    })
+                }
+            }
 
+            // 属性添加
+            if (addProperty) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                    ) {
+                        PropertyBottomSheet("", onClose = {
+                            addProperty = false
+                        }, onCommitted = {
+                            addProperty = false
+                            showTips = "添加了$it"
+                        }, add = true to {
+
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+
+    // tips ialog
+
+    if (showTips.isNotEmpty()) {
+        CHTipsDialog(showTips) {
+            showTips = ""
         }
 
-
+//        CHAlertDialog("测试","adadadadada", onDismissRequest = {
+//            showTips=""
+//        })
     }
+}
 
+
+enum class MenuData(@DrawableRes val icon: Int, @StringRes val text: Int) {
+    ConfigWiFi(R.mipmap.icon_twins_wifi, R.string.menu_config_wifi),
+    Setting(R.mipmap.icon_twins_wifi, R.string.menu_setting),
+    Logger(R.mipmap.icon_twins_wifi, R.string.menu_logger),
+    UpdateTsl(R.mipmap.icon_twins_wifi, R.string.menu_update_tsl)
+    ;
+}
+
+/**
+ * todo 点击事件的问题
+ */
+@Composable
+internal fun XPopContainer(content: @Composable () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White.copy(alpha = 0.6f))
+    ) {
+        content()
+    }
+}
+
+@Composable
+private fun MenuList(modifier: Modifier = Modifier, onMenuClick: (MenuData) -> Unit) {
+    val list: Array<MenuData> by remember {
+        mutableStateOf(MenuData.values())
+    }
+    XPopContainer() {
+        CHItemShadowShape(elevation = 16.dp, modifier = modifier) {
+            Column(
+                modifier = Modifier
+//                .size(300.dp)
+//                .wrapContentWidth()
+                    .width(162.dp)
+//                .widthIn(max = 300.dp, min = 100.dp)
+//                .wrapContentHeight()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(ItemDefaults.itemBackground)
+//                .padding(16.dp)
+            ) {
+                list.forEach {
+                    MenuItem(it) {
+                        onMenuClick(it)
+                    }
+                }
+            }
+        }
+    }
 
 }
 
 @Composable
-private fun CHDeviceDetail(
-    device: DeviceAndState,
+private fun MenuItem(menuData: MenuData, onClick: () -> Unit) {
+    Row(modifier = Modifier
+        .height(49.dp)
+        .fillMaxWidth()
+        .clickable {
+            onClick()
+        }
+        .padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Image(
+            painter = painterResource(id = menuData.icon),
+            contentDescription = null,
+            modifier = Modifier.size(20.dp),
+            contentScale = ContentScale.Crop
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            text = stringResource(id = menuData.text),
+            fontSize = 14.sp,
+            color = app_textColor_333333
+        )
+
+    }
+}
+
+@Composable
+private fun <T> KVList(
+    tab: DeviceTab, list: List<T>,
+    onPropertyAction: (T) -> Unit,
+    onServiceAction: (T) -> Unit,
+    onEventAction: (T) -> Unit,
+) {
+    if (list.isEmpty()) {
+        CHEmptyView()
+    } else {
+        Box(Modifier.padding(horizontal = 16.dp)) {
+            when (tab) {
+                DeviceTab.Properties -> {
+
+                    ListTslProperty(list = list) {
+                        onPropertyAction.invoke(it)
+                    }
+                }
+
+                DeviceTab.Events -> {
+
+                    ListTslEvent(list = list) {
+                        onEventAction(it)
+                    }
+                }
+
+                DeviceTab.Services -> {
+
+                    ListTslService(list = list) {
+                        onServiceAction(it)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Top(
+    device: DeviceAndState?,
     modifier: Modifier = Modifier,
 ) {
     val constraints = ConstraintSet {
@@ -179,7 +409,7 @@ private fun CHDeviceDetail(
         )
 
         Text(
-            text = device.name,
+            text = device?.name ?: "-",
             Modifier.layoutId("deviceId"),
             fontSize = 11.sp,
             color = Color(0xff999999),
@@ -188,7 +418,7 @@ private fun CHDeviceDetail(
         )
 
         Text(
-            text = device.name,
+            text = device?.name ?: "-",
             fontSize = 12.sp,
             color = Color(0xff999999),
             modifier = Modifier.layoutId("deviceType"),
@@ -257,7 +487,7 @@ fun Modifier.tabIndicatorOffsetDemo(
 }
 
 @Composable
-private fun CHTab(modifier: Modifier, tab: DeviceTab, onTabSelected: (tab: DeviceTab) -> Unit) {
+private fun Tab(modifier: Modifier, tab: DeviceTab, onTabSelected: (tab: DeviceTab) -> Unit) {
     LazyRow(modifier = modifier) {
         val array = DeviceTab.values()
         items(items = array, key = {
@@ -269,7 +499,28 @@ private fun CHTab(modifier: Modifier, tab: DeviceTab, onTabSelected: (tab: Devic
                 title = stringResource(item.text),
                 onClick = { onTabSelected.invoke(item) }
             )
+
         }
+    }
+
+}
+
+@Composable
+private fun CountInfo(modifier: Modifier = Modifier, count: Int) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = "共计",
+            color = app_textColor_666666,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Light
+        )
+        Spacer(modifier = Modifier.width(5.dp))
+        Text(
+            text = "$count",
+            color = app_textColor_333333,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 
 }
@@ -330,13 +581,13 @@ private fun CHTabItem(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier.width(56.dp)
+        modifier = modifier
+            .width(56.dp)
             .height(36.dp)
             //.border(2.dp,Color.Red)
-            .clickable(onClick = onClick)
-            //.padding(16.dp)
-
-        ,
+            .clip(CircleShape)
+            .clickable(onClick = onClick),
+        //.padding(16.dp)
 
 //        verticalArrangement = Arrangement.Center,
 //        horizontalAlignment = Alignment.CenterHorizontally
@@ -347,15 +598,20 @@ private fun CHTabItem(
 //        )
 //        Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = title, color = Color(0xff333333), fontSize = if (selected) 18.sp else 14.sp,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal, modifier = Modifier.align(
-                Alignment.Center)
+            text = title,
+            color = Color(0xff333333),
+            fontSize = if (selected) 18.sp else 14.sp,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+            modifier = Modifier.align(
+                Alignment.Center
+            )
         )
         Spacer(modifier = Modifier.height(16.dp))
-        if (selected){
+        if (selected) {
             Box(
                 modifier = Modifier
-                    .width(12.dp).height(3.dp)
+                    .width(12.dp)
+                    .height(3.dp)
                     .background(color = Color(0xff339DFF))
                     .clip(RoundedCornerShape(3.dp))
                     .align(Alignment.BottomCenter)

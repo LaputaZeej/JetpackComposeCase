@@ -58,7 +58,8 @@ import com.yunext.twins.compose.ui.debug.route.DebugCase
 
 // https://developer.android.com/codelabs/jetpack-compose-navigation?hl=zh-cn&continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fcompose%3Fhl%3Dzh-cn%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fjetpack-compose-navigation#4
 
-fun NavHostController.navigateSingleTopTo(route: String) =
+fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route)
+fun NavHostController.navigateSingleTopTo2(route: String) =
     this.navigate(route) {
         // Pop up to the start destination of the graph to
         // avoid building up a large stack of destinations
@@ -66,7 +67,7 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         // 弹出到导航图的起始目的地，以免在您选择标签页时在返回堆栈上积累大量目的地
         // 在任何目的地按下返回箭头都会将整个返回堆栈弹出到“X1”屏幕
         popUpTo(
-            this@navigateSingleTopTo.graph.findStartDestination().id
+            this@navigateSingleTopTo2.graph.findStartDestination().id
         ) {
             saveState = true
             //this.inclusive = true

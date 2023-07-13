@@ -1,12 +1,16 @@
 package com.yunext.twins.compose.ui.theme
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Typography
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yunext.twins.compose.ui.debug.cases.compoents.China
 
 val ItemShape = RoundedCornerShape(
     topStart = 12.dp,
@@ -14,6 +18,8 @@ val ItemShape = RoundedCornerShape(
     bottomStart = 12.dp,
     bottomEnd = 12.dp
 )
+
+internal fun Modifier.debugBorder() = this.border(1.dp, China.r_luo_xia_hong)
 
 
 //val fontName = GoogleFont("Lato")

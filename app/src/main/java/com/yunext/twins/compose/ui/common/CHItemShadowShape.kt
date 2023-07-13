@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.yunext.twins.compose.ui.debug.cases.compoents.China
 import com.yunext.twins.compose.ui.theme.ItemShape
 
 @Preview
@@ -76,7 +77,8 @@ fun CHItemShadowShape(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.wrapContentSize()
+        modifier = modifier
+            .wrapContentSize()
 //            .background(
 //                shape = ItemShape,
 //                color = Color.White
@@ -84,9 +86,9 @@ fun CHItemShadowShape(
             .shadow(
                 elevation = elevation,
                 shape = ItemShape,
-                clip = true,
-                ambientColor = Color.Green,
-                spotColor = Color.Black
+                clip = false,
+//                ambientColor = China.b_tian_lan,
+//                spotColor = China.r_fen_hong
             )
     ) {
         content()

@@ -35,12 +35,12 @@ val Typography = Typography(
 
 )
 
-object Twins{
+object Twins {
     val twins_title = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        color = Color(0xff333333)
+        color = app_textColor_333333
     )
 
     val twins_edit_text = TextStyle(
@@ -56,6 +56,7 @@ object Twins{
         fontSize = 14.sp,
         color = Color(0xff999999)
     )
+
 }
 
 

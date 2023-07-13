@@ -38,7 +38,7 @@ object China {
     // 鱼肚白
     val w_yu_du_bai = Color(247,244,237)
     // 雪白
-    val w_xue_bao = Color(255,254,249)
+    val w_xue_bai = Color(255,254,249)
     // 薄荷绿
     val g_bo_he_lv = Color(32,127,76)
     // 海天蓝
